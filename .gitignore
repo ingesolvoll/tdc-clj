@@ -44,3 +44,5 @@ target
 Network Trash Folder
 Temporary Items
 .apdisk
+*.iml
+.lein-repl-history
