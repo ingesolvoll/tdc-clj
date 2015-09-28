@@ -9,7 +9,7 @@
 
 
 (defroutes application
-           (GET "/socket" request (sockets/ ws-handler request)))
+           (GET "/socket" request (sockets/ws-handler request)))
 
 
 (defn stop! []
