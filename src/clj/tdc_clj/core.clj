@@ -9,7 +9,7 @@
 (defonce channels (atom #{}))
 
 (defn connect! [channel]
-  (timbre/info "channel open")
+  (println "channel open")
   (swap! channels conj channel))
 
 (defn disconnect! [channel status]
@@ -24,15 +24,16 @@
 (defroutes application
            (GET "/socket" request (ws-handler request)))
 
-(defn stop! [{:keys [server socket-ch]}]
-  (server)
-  (reset! app nil))
+(defn stop! []
+  (let [{:keys [server socket-ch]} @app]
+    (server)
+    (reset! app nil)))
 
 (defn start! []
   (reset! app {:server    (httpkit/run-server #'application {:port 8080})
                :input-ch  nil
                :socket-ch nil}))
 
-(defn restart! [app]
-  (stop! @app)
+(defn restart! []
+  (stop!)
   (ns-repl/refresh :after 'tdc-clj.core/start!))
