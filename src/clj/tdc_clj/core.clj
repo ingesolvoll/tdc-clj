@@ -3,7 +3,8 @@
             [compojure.core :refer [defroutes GET]]
             [clojure.repl :as repl]
             [clojure.tools.namespace.repl :as ns-repl]
-            [tdc-clj.sockets :as sockets]))
+            [tdc-clj.sockets :as sockets]
+            [clojure.core.async :refer [close! go-loop >! <! chan timeout]]))
 
 (defonce app (atom nil))
 
@@ -13,14 +14,25 @@
 
 
 (defn stop! []
-  (let [{:keys [server socket-ch]} @app]
+  (let [{:keys [server input-ch]} @app]
     (server)
+    (close! input-ch)
     (reset! app nil)))
 
 (defn start! []
-  (reset! app {:server    (httpkit/run-server #'application {:port 8080})
-               :input-ch  nil
-               :socket-ch nil}))
+  (let [input-ch (chan)]
+    (go-loop []
+      (>! input-ch "Hey hey")
+      (<! (timeout 1000))
+      (recur))
+
+    (go-loop []
+      (sockets/notify-clients (<! input-ch))
+      (recur))
+
+    (reset! app {:server    (httpkit/run-server #'application {:port 8080})
+                 :input-ch  input-ch
+                 :socket-ch nil})))
 
 (defn restart! []
   (stop!)
