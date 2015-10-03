@@ -5,22 +5,25 @@
                  [compojure "1.4.0"]
                  [ring/ring-core "1.4.0"]
                  [http-kit "2.1.18"]
+                 [hiccup "1.0.5"]
                  [org.clojure/tools.namespace "0.2.11"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [reagent "0.5.0"]
-                 ]
+                 [reagent "0.5.0"]]
   :resource-paths ["resources"]
   :source-paths ["src/clj"]
   :plugins [[lein-cljsbuild "1.0.5"]
             [lein-figwheel "0.3.1"]]
   :test-paths ["test/clj"]
+  :figwheel {
+             :ring-handler tdc-clj.core/application
+             }
   :cljsbuild {
               :builds [{:id           "dev"
-                        :source-paths ["src/main/cljs"]
+                        :source-paths ["src/cljs"]
 
                         :figwheel     {}
 
-                        :compiler     {:main                 tdc-clj.client
+                        :compiler     {:main                 tdc-clj.client.core
                                        :asset-path           "js/compiled"
                                        :output-to            "resources/public/js/compiled/app.js"
                                        :output-dir           "resources/public/js/compiled"

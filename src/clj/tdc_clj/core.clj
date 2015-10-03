@@ -1,39 +1,30 @@
 (ns tdc-clj.core
-  (:require [org.httpkit.server :as httpkit :refer [send! with-channel on-close on-receive]]
+  (:require [org.httpkit.server :refer [send! with-channel on-close on-receive run-server]]
             [compojure.core :refer [defroutes GET]]
             [clojure.repl :as repl]
             [clojure.tools.namespace.repl :as ns-repl]
             [tdc-clj.sockets :as sockets]
+            [tdc-clj.page :as page]
             [clojure.core.async :refer [close! go-loop >! <! chan timeout]]))
 
 (defonce app (atom nil))
 
-
 (defroutes application
-           (GET "/socket" request (sockets/ws-handler request)))
-
+           (GET "/socket" request (sockets/ws-handler request))
+           (GET "/client" [] (page/client)))
 
 (defn stop! []
-  (let [{:keys [server input-ch]} @app]
-    (server)
-    (close! input-ch)
-    (reset! app nil)))
+  (println "Stopping " @app)
+  (if @app (@app))
+  (reset! app nil))
 
 (defn start! []
-  (let [input-ch (chan)]
-    (go-loop []
-      (>! input-ch "Hey hey")
+  (reset! app (run-server #'application {:port 8085}))
+  (go-loop [val 1000]
+    (sockets/notify-clients (str "Value numberrr " val))
+    (when @app
       (<! (timeout 1000))
-      (recur))
+      (recur (inc val)))))
 
-    (go-loop []
-      (sockets/notify-clients (<! input-ch))
-      (recur))
-
-    (reset! app {:server    (httpkit/run-server #'application {:port 8080})
-                 :input-ch  input-ch
-                 :socket-ch nil})))
-
-(defn restart! []
-  (stop!)
+(defn reload! []
   (ns-repl/refresh :after 'tdc-clj.core/start!))
