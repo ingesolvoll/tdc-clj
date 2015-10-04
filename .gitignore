@@ -47,3 +47,4 @@ Temporary Items
 *.iml
 .lein-repl-history
 resources/public/js/compiled
+figwheel_server.log
