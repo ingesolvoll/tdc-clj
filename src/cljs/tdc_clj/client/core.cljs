@@ -8,16 +8,14 @@
 
 (defn layout []
   [:ul
-   (for [message @messages]
+   (for [message (take-last 20 @messages)]
      ^{:key message}
      [:li message])])
 
 (defn make-websocket [url handler]
-  (println "Connectin' " url)
   (when-let [chan (js/WebSocket. url)]
     (set! (.-onmessage chan) handler)
-    (reset! socket chan)
-    (println "Good to go!")))
+    (reset! socket chan)))
 
 (defn start! []
   (make-websocket "ws://localhost:8085/socket" #(swap! messages conj (.-data %))))
