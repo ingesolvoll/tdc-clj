@@ -23,4 +23,6 @@ Type ```(stop!)``` to stop it.
 
 * Open up a second command shell, type ```lein figwheel```
 
-Your client is now running and can be reached at http://localhost:3449/client
+Your client is now running and can be reached at 
+
+http://localhost:3449/client
