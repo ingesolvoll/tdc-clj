@@ -2,15 +2,21 @@
 
 Web server streaming fake football events on a web socket.
 
-To build and run
+## Run server
 
 * Install https://github.com/technomancy/leiningen
 * Open command shell
 * Run the command ```lein repl```
-* Once inside the REPL, run ```(def app (start!))```
+* Once inside the REPL, run ```(start!)```
 
-At that point, your app resides in the app variable. 
+At that point your server runs at http://localhost:8080/socket
 
-Type ```(restart! app)``` to reload code and restart server. 
+Type ```(restart!)``` to reload code and restart server. 
 
-Type ```(stop! app)``` to stop it.
+Type ```(stop!)``` to stop it.
+
+## Run client
+
+* Open up a second command shell, type ```lein figwheel```
+
+Your client is now running and can be reached at http://localhost:3449/client
