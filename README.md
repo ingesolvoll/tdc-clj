@@ -2,7 +2,11 @@
 
 Web server streaming fake football events on a web socket.
 
-## Run server
+The repo contains: 
+* An HTTP kit server pushing out messages on a web socket
+* A simple web client listing last 20 messages from server
+
+## Server
 
 * Install https://github.com/technomancy/leiningen
 * Open command shell
@@ -15,7 +19,7 @@ Type ```(restart!)``` to reload code and restart server.
 
 Type ```(stop!)``` to stop it.
 
-## Run client
+## Client
 
 * Open up a second command shell, type ```lein figwheel```
 
