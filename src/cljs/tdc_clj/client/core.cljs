@@ -18,7 +18,7 @@
     (reset! socket chan)))
 
 (defn start! []
-  (make-websocket "ws://localhost:8085/socket" #(swap! messages conj (.-data %))))
+  (make-websocket "ws://localhost:8080/socket" #(swap! messages conj (.-data %))))
 
 (reagent/render [layout]
                 (. js/document (getElementById "app")) start!)

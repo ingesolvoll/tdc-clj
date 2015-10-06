@@ -5,6 +5,8 @@
             [clojure.tools.namespace.repl :as ns-repl]
             [tdc-clj.sockets :as sockets]
             [tdc-clj.page :as page]
+            [tdc-clj.data :as data]
+            [clojure.data.json :as json]
             [clojure.core.async :refer [close! go-loop >! <! chan timeout]]))
 
 (defonce app (atom nil))
@@ -19,12 +21,12 @@
   (reset! app nil))
 
 (defn start! []
-  (reset! app (run-server #'application {:port 8085}))
-  (go-loop [val 1000]
-    (sockets/notify-clients (str "Value numberrr " val))
-    (when @app
-      (<! (timeout 1000))
-      (recur (inc val)))))
+  (reset! app (run-server #'application {:port 8080}))
+    (go-loop [val 1000]
+      (sockets/notify-clients (json/write-str (data/get-random-data)))
+      (when @app
+        (<! (timeout 1000))
+        (recur (inc val)))))
 
 (defn reload! []
   (ns-repl/refresh :after 'tdc-clj.core/start!))
