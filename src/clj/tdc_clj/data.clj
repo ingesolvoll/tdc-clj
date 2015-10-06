@@ -1,24 +1,44 @@
-(ns tdc-clj.data)
-
-(defonce key-counter (atom 0))
-
-(defn generate-key []
-  (let [key (swap! key-counter inc)]
-    (keyword (str "key-" key))))
+(ns tdc-clj.data
+  (:require [clojure.core.async :refer [go timeout <! >! chan]]))
 
 (def matches
-  [{:id 1 :home "Rosenborg" :away "Molde" :league 1}
-   {:id 2 :home "Bodø/Glimt" :away "Tromsø" :league 1}
-   {:id 3 :home "Chelsea" :away "Manchester United" :league 2}
-   {:id 4 :home "Borussia Dortmund" :away "Bayern Munchen" :league 3}])
+  {1 {:home 1 :away 2 :league 2}
+   2 {:home 3 :away 4 :league 1}})
 
-(def types
-  [:default :yellow :red :penalty :goal :injury :drama :chance :sub])
+(def leagues
+  [{:id 1 :name "Premier League"}
+   {:id 2 :name "La Liga"}
+   {:id 3 :name "Tippeligaen"}])
 
-(defn match-data []
-  [{:id (generate-key) :league 1 :match 1 :type :chance :message "Søderlund går i duell med Berg Hestad høyt i banen, og får frispark!"}
-   {:id (generate-key) :league 1 :match 2 :type :yellow :message "Trond Olsen blir tatt uten å få frispark. Blir så sint at han får gult kort av dommeren"}
-   {:id (generate-key) :league 3 :match 4 :type :sub :message "Marco Reus får stoppet Arjen Robben i siste liten, like før han var alene med keeper der"}])
+(def players
+  {1 ["Benzema" "Ronaldo" "Ramos" "Modric" "Bale"]
+   2 ["Messi" "Neymar" "Suarez" "Iniesta" "Alves"]
+   3 ["Rooney" "Memphis" "Herrera" "Smalling" "Blind"]
+   4 ["Sanchez" "Ramsay" "Giroud" "Cazorla" "Bellerin"]})
+
+(def teams
+  [{:id 1 :name "Real Madrid"}
+   {:id 2 :name "Barcelona"}
+   {:id 3 :name "Manchester United"}
+   {:id 4 :name "Arsenal"}])
+
+(def events
+  [{:type :chance :message "Rough tackle by %s, free kick awarded to %s"}
+   {:type :penalty :message "%s uses his hand to stop the ball. %s to take the penalty"}])
+
+(defn random-player [team-id]
+  (-> players (get team-id) rand-nth))
+
+(defn random-event [match-id]
+  (let [{:keys [home away]} (get matches match-id)
+        home-player (random-player home)
+        away-player (random-player away)
+        message (rand-nth events)]
+    (update-in message [:message] format home-player away-player)))
 
 (defn get-random-data []
-  (rand-nth (match-data)))
+  (random-event (inc (rand-int 2))))
+
+(def sequence
+  [10000 (random-event 1) 5000 (random-event 2) 5000 (get-random-data) 2000
+   {:type :goal :message "Rooney scores for Manchester United! A wonderful shot, Checzh is nowhere near it!"}])

@@ -7,9 +7,11 @@
             [tdc-clj.page :as page]
             [tdc-clj.data :as data]
             [clojure.data.json :as json]
-            [clojure.core.async :refer [close! go-loop >! <! chan timeout]]))
+            [clojure.core.async :refer [close! go-loop go >! <! chan timeout]]))
 
 (defonce app (atom nil))
+
+(defonce loop-forever (atom true))
 
 (defroutes application
            (GET "/socket" request (sockets/ws-handler request))
@@ -20,13 +22,27 @@
   (if @app (@app))
   (reset! app nil))
 
+(defn stop-random-forever []
+  (reset! loop-forever false))
+
+(defn start-random-forever []
+  (reset! loop-forever true)
+  (go
+    (while @loop-forever
+      (-> (data/get-random-data) json/write-str sockets/notify-clients)
+      (<! (timeout 1000)))))
+
+(defn run-sequence []
+  (go-loop [[current & rest] data/sequence]
+    (if (integer? current)
+      (<! (timeout current))
+      (sockets/notify-clients (json/write-str current)))
+    (if (seq rest)
+      (recur rest))))
+
 (defn start! []
   (reset! app (run-server #'application {:port 8080}))
-    (go-loop [val 1000]
-      (sockets/notify-clients (json/write-str (data/get-random-data)))
-      (when @app
-        (<! (timeout 1000))
-        (recur (inc val)))))
+  (start-random-forever))
 
 (defn reload! []
-  (ns-repl/refresh :after 'tdc-clj.core/start!))
+  (ns-repl/refresh))
