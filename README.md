@@ -24,3 +24,9 @@ Type ```(stop!)``` to stop it.
 * Open up a second command shell, type ```lein figwheel```
 
 Your client is now running and can be reached at <http://localhost:3449/client>
+
+## Runtime tweaking
+
+When the server starts, a loop is also started with random events sent every second. This loop can be stopped with `(stop-random-forever)` and restarted again with `(start-random-forever)`
+
+To run a predefined sequence of events, run `(run-sequence)`
