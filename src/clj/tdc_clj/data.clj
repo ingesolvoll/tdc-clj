@@ -34,7 +34,9 @@
         home-player (random-player home)
         away-player (random-player away)
         message (rand-nth events)]
-    (update-in message [:message] format home-player away-player)))
+    (-> message
+        (update-in [:message] format home-player away-player)
+        (assoc :matchId match-id))))
 
 (defn get-random-data []
   (random-event (inc (rand-int 2))))
