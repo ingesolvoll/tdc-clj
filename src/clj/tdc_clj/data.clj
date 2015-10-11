@@ -16,7 +16,9 @@
    {:type :penalty :message "%s uses his hand to stop the ball. %s to take the penalty"}
    {:type :chance :message "Free kick in a very good position as %s brings %s to the ground"}
    {:type :yellow :message "%s is booked for a poor challenge on %s."}
-   {:type :sub :message "%s is replaced by %s."}])
+   {:type :sub :message "%s is replaced by %s."}
+   {:type :chance :message "Strong shout for a penalty as %s's goal-bound attempt is blocked by %s, but the referee says it was not with his hands. The home supporters go mad!"}
+   {:type :chance :message "Half-chance as %s drives down the left before delivering a cross towards %s"}])
 
 (defn random-player [team-id]
   (-> players (get team-id) rand-nth))
