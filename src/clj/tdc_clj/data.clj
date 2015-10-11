@@ -13,7 +13,10 @@
 
 (def events
   [{:type :chance :message "Rough tackle by %s, free kick awarded to %s"}
-   {:type :penalty :message "%s uses his hand to stop the ball. %s to take the penalty"}])
+   {:type :penalty :message "%s uses his hand to stop the ball. %s to take the penalty"}
+   {:type :chance :message "Free kick in a very good position as %s brings %s to the ground"}
+   {:type :yellow :message "%s is booked for a poor challenge on %s."}
+   {:type :sub :message "%s is replaced by %s."}])
 
 (defn random-player [team-id]
   (-> players (get team-id) rand-nth))
@@ -30,8 +33,6 @@
 (defn get-random-data []
   (random-event (rand-nth (keys matches))))
 
-(def sequence
+(def event-sequence
   [10000 (random-event :BARREA) 5000 (random-event :MANARS) 5000 (get-random-data) 2000
    {:type :goal :message "Rooney scores for Manchester United! A wonderful shot, Checzh is nowhere near it!"}])
-
-(random-event :BARREA)

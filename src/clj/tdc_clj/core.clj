@@ -33,7 +33,7 @@
       (<! (timeout 1000)))))
 
 (defn run-sequence []
-  (go-loop [[current & rest] data/sequence]
+  (go-loop [[current & rest] data/event-sequence]
     (if (integer? current)
       (<! (timeout current))
       (sockets/notify-clients (json/write-str current)))
