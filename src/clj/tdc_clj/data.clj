@@ -2,25 +2,14 @@
   (:require [clojure.core.async :refer [go timeout <! >! chan]]))
 
 (def matches
-  {1 {:home 1 :away 2 :league 2}
-   2 {:home 3 :away 4 :league 1}})
-
-(def leagues
-  [{:id 1 :name "Premier League"}
-   {:id 2 :name "La Liga"}
-   {:id 3 :name "Tippeligaen"}])
+  {:BARREA {:home "Barcelona" :away "Real Madrid" :league "Premier League"}
+   :MANARS {:home "Manchester United" :away "Arsenal" :league "La Liga"}})
 
 (def players
-  {1 ["Benzema" "Ronaldo" "Ramos" "Modric" "Bale"]
-   2 ["Messi" "Neymar" "Suarez" "Iniesta" "Alves"]
-   3 ["Rooney" "Memphis" "Herrera" "Smalling" "Blind"]
-   4 ["Sanchez" "Ramsay" "Giroud" "Cazorla" "Bellerin"]})
-
-(def teams
-  [{:id 1 :name "Real Madrid"}
-   {:id 2 :name "Barcelona"}
-   {:id 3 :name "Manchester United"}
-   {:id 4 :name "Arsenal"}])
+  {"Real Madrid" ["Benzema" "Ronaldo" "Ramos" "Modric" "Bale"]
+   "Barcelona" ["Messi" "Neymar" "Suarez" "Iniesta" "Alves"]
+   "Manchester United" ["Rooney" "Memphis" "Herrera" "Smalling" "Blind"]
+   "Arsenal" ["Sanchez" "Ramsay" "Giroud" "Cazorla" "Bellerin"]})
 
 (def events
   [{:type :chance :message "Rough tackle by %s, free kick awarded to %s"}
@@ -30,7 +19,7 @@
   (-> players (get team-id) rand-nth))
 
 (defn random-event [match-id]
-  (let [{:keys [home away]} (get matches match-id)
+  (let [{:keys [home away]} (match-id matches)
         home-player (random-player home)
         away-player (random-player away)
         message (rand-nth events)]
@@ -39,8 +28,10 @@
         (assoc :matchId match-id))))
 
 (defn get-random-data []
-  (random-event (inc (rand-int 2))))
+  (random-event (rand-nth (keys matches))))
 
 (def sequence
-  [10000 (random-event 1) 5000 (random-event 2) 5000 (get-random-data) 2000
+  [10000 (random-event :BARREA) 5000 (random-event :MANARS) 5000 (get-random-data) 2000
    {:type :goal :message "Rooney scores for Manchester United! A wonderful shot, Checzh is nowhere near it!"}])
+
+(random-event :BARREA)
