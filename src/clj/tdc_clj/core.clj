@@ -32,13 +32,13 @@
       (-> (data/get-random-data) json/write-str sockets/notify-clients)
       (<! (timeout 1000)))))
 
-(defn run-sequence []
-  (go-loop [[current & rest] data/event-sequence]
-    (if (integer? current)
-      (<! (timeout current))
-      (sockets/notify-clients (json/write-str current)))
-    (if (seq rest)
-      (recur rest))))
+(defn run-steps! [steps limit]
+    (go
+      (loop [steps (take limit steps)]
+        (when-let [[delay data] (first steps)]
+          (<! (timeout (* 1000 delay)))
+          (sockets/notify-clients data)
+          (recur (rest steps))))))
 
 (defn start! []
   (reset! app (run-server #'application {:port 8080}))
