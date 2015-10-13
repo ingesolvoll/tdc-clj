@@ -34,7 +34,7 @@
 
 
 
-(reduce + (filter number? [:random 1 :stuff 2 :here 3]))
+(reduce + 15 [1 2 3 4 5])
 
 
 
@@ -45,12 +45,24 @@
 
 
 
-
-
+; Make an infinite list containing the results of running the supplied function
 
 (repeatedly #(rand-int 10))
 
 
+
+
+
+
+
+
+
+
+
+
+
+; Infinite sequence of the numbers 1 2 3 repeated
+(cycle [1 2 3])
 
 
 
@@ -71,8 +83,19 @@
               [(rand-int 10) (get-random-data)])))
 
 
-; Infinite sequence of the numbers 1 2 3 repeated
-(cycle [1 2 3])
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ; Infinite sequence of random events from every second match
