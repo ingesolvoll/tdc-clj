@@ -36,5 +36,7 @@
   (random-event (rand-nth (keys matches))))
 
 (def event-sequence
-  [10000 (random-event :BARREA) 5000 (random-event :MANARS) 5000 (get-random-data) 2000
-   {:type :goal :message "Rooney scores for Manchester United! A wonderful shot, Checzh is nowhere near it!"}])
+  [1 (random-event :BARREA)
+   5 (random-event :MANARS)
+   5 (get-random-data)
+   2 {:type :goal :message "Rooney scores for Manchester United! A wonderful shot, Checzh is nowhere near it!"}])

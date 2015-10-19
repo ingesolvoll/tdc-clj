@@ -33,12 +33,15 @@
       (<! (timeout 1000)))))
 
 (defn run-steps! [steps limit]
+  (let [steps (take limit (partition 2 steps))]
     (go
       (loop [steps (take limit steps)]
         (when-let [[delay data] (first steps)]
           (<! (timeout (* 1000 delay)))
-          (sockets/notify-clients data)
-          (recur (rest steps))))))
+          (sockets/notify-clients (json/write-str data))
+          (recur (rest steps)))))))
+
+(run-steps! [1 "hey" 5 "ho"] 2)
 
 (defn start! []
   (reset! app (run-server #'application {:port 8080}))

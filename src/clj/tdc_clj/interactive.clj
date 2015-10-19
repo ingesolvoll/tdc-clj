@@ -10,7 +10,7 @@
 
 
 
-(map inc [1 2 3])
+(map dec [1 2 3])
 
 
 
@@ -22,7 +22,7 @@
 
 
 
-(filter pos? [-100 54 -3 0 100])
+(filter pos? [-100 54 -3 0 105])
 
 
 
@@ -34,7 +34,28 @@
 
 
 
-(reduce + 15 [1 2 3 4 5])
+(reduce + 5 [1 2 3 4 5])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(reductions + 5 [1 2 3 4 5])
+
+
+
+
+
+
 
 
 
@@ -77,28 +98,62 @@
 
 
 
-; Infinite sequence of random events with random pauses in between
-(def seq-1 (repeatedly
-            (fn []
-              [(rand-int 10) (get-random-data)])))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ; Infinite sequence of random events from every second match
 (def cycling-matches (map
                       random-event
                       (cycle [:BARREA :MANARS])))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(def cycling-delays (cycle [3 6 9]))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(def rand-delays (repeatedly (partial rand-int 10)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
