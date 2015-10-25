@@ -22,10 +22,10 @@
   (if @app (@app))
   (reset! app nil))
 
-(defn stop-random-forever []
+(defn stop-loop []
   (reset! loop-forever false))
 
-(defn start-random-forever []
+(defn start-loop []
   (reset! loop-forever true)
   (go
     (while @loop-forever
@@ -41,11 +41,9 @@
           (sockets/notify-clients (json/write-str data))
           (recur (rest steps)))))))
 
-(run-steps! [1 "hey" 5 "ho"] 2)
-
 (defn start! []
   (reset! app (run-server #'application {:port 8080}))
-  (start-random-forever))
+  (start-loop))
 
 (defn reload! []
   (ns-repl/refresh))

@@ -33,7 +33,10 @@
         (assoc :matchId match-id))))
 
 (defn get-random-data []
-  (random-event (rand-nth (keys matches))))
+  (-> matches
+      keys
+      rand-nth
+      random-event))
 
 (def event-sequence
   [1 (random-event :BARREA)
