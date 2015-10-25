@@ -38,7 +38,7 @@
       rand-nth
       random-event))
 
-(def event-sequence
+(def demo-events
   [1 (random-event :BARREA)
    5 (random-event :MANARS)
    5 (get-random-data)
